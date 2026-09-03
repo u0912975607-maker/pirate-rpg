@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>海賊冒險 RPG｜戰鬥強化版</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050b16;color:#fff;font-family:system-ui,"Noto Sans TC",sans-serif;touch-action:none}
+#app{position:relative;width:100vw;height:100dvh;overflow:hidden;background:linear-gradient(#54c8ef 0 45%,#123d5a 46% 57%,#b67b48 58%)}
+#world{position:absolute;inset:0;background:radial-gradient(circle at 75% 14%,#fff9 0 4%,transparent 13%),linear-gradient(#46c3ed,#b9e8f4 43%,#347d98 44%,#092d48 62%,#b87945 63%);transition:.4s}
+.cloud{position:absolute;font-size:60px;opacity:.55;animation:cloud 18s linear infinite}@keyframes cloud{from{transform:translateX(-130px)}to{transform:translateX(110vw)}}
+#top{position:absolute;top:calc(8px + env(safe-area-inset-top));left:8px;right:8px;z-index:5;display:flex;gap:6px;flex-wrap:wrap}.stat{background:#06111dcc;border:1px solid #fff7;border-radius:12px;padding:4px 7px;font-size:11px}.meter{width:110px;height:9px;background:#222;border-radius:6px;overflow:hidden;margin-top:3px}.meter i{display:block;height:100%;width:100%;background:#e33}.energy i{background:#29a9ff}.exp i{background:#ffd332}
+#hero{position:absolute;width:54px;height:68px;left:18%;top:53%;z-index:3;border-radius:18px 18px 10px 10px;background:#c92c32;border:2px solid #fff8;box-shadow:0 5px 12px #0008;font-size:34px;text-align:center;padding-top:19px}.hat{position:absolute;top:-29px;left:3px;font-size:42px}
+.slash{position:absolute;z-index:14;font-size:48px;pointer-events:none;animation:slash .32s ease-out forwards}@keyframes slash{0%{transform:scale(.45) rotate(-25deg);opacity:0}35%{transform:scale(1.15) rotate(12deg);opacity:1}100%{transform:scale(1.5) rotate(35deg);opacity:0}}.hitflash{animation:hitflash .18s ease-out}@keyframes hitflash{50%{filter:brightness(2.5) saturate(1.7);transform:scale(1.12)}100%{filter:none;transform:scale(1)}}.bossin{animation:bossin .6s ease-out}@keyframes bossin{0%{transform:translateX(80px) scale(.5);opacity:0}70%{transform:translateX(-6px) scale(1.08);opacity:1}100%{transform:translateX(0) scale(1);opacity:1}}.enemy{position:absolute;z-index:2;width:50px;height:62px;border-radius:14px;background:#253c68;border:2px solid #fff8;text-align:center;font-size:30px;padding-top:12px;box-shadow:0 4px 8px #0008}.boss{width:78px;height:90px;font-size:46px;background:#a9281e;border:3px solid #ffd34e}.eb{position:absolute;left:2px;right:2px;top:-10px;height:7px;background:#111;border:1px solid #fff}.eb i{display:block;height:100%;background:#55e05d}
+#dialog{position:absolute;z-index:15;left:5%;right:5%;bottom:24%;background:#06111eee;border:2px solid #e8bd4d;border-radius:15px;padding:13px;display:none;text-align:center}.continue{margin-top:9px;padding:8px 20px;border:0;border-radius:9px;background:#e8bd4d;font-weight:900}
+#controls{position:absolute;z-index:10;left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom));display:flex;justify-content:space-between;align-items:end}
+.dpad{display:grid;grid-template-columns:52px 52px 52px;grid-template-rows:46px 46px}.dpad button:nth-child(1){grid-column:2}.dpad button:nth-child(2){grid-row:2}.dpad button:nth-child(3){grid-row:2;grid-column:2}.dpad button:nth-child(4){grid-row:2;grid-column:3}
+.actions{display:grid;grid-template-columns:70px 70px;gap:6px}.actions button{height:55px}
+button{color:#fff;background:#102a46dd;border:2px solid #ffffffaa;border-radius:14px;font-weight:900;font-size:13px;box-shadow:0 4px 9px #0008}.atk{background:#a9262add}.sk{background:#7139a8dd}.dg{background:#84621add}.hl{background:#187541dd}.en{background:#12699bdd}
+#menu{position:absolute;z-index:20;inset:0;background:linear-gradient(#06182aeF,#020711F5);display:flex;align-items:center;justify-content:center;text-align:center;padding:20px}.card{width:min(500px,92vw)}h1{font-size:34px;margin:4px 0}.logo{font-size:70px}.sub{color:#ffd85b;font-weight:900;font-size:18px}.row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px 0}.char{padding:12px 15px;min-width:105px}.char.sel{outline:3px solid #ffd34e;background:#334b67}.mainbtn{padding:14px 40px;font-size:18px;background:#c82d32}.small{font-size:12px;opacity:.65;line-height:1.5}
+#levelup{position:absolute;z-index:16;left:50%;top:35%;transform:translate(-50%,-50%);background:#101b2cf2;border:2px solid #ffd34e;border-radius:16px;padding:18px;text-align:center;display:none;min-width:230px}
+#bossname{position:absolute;z-index:14;left:50%;top:17%;transform:translateX(-50%);background:#a9281eee;border:2px solid #ffd34e;border-radius:14px;padding:8px 18px;font-weight:1000;font-size:20px;display:none;text-align:center;text-shadow:2px 2px #000}#toast{position:absolute;z-index:18;left:50%;bottom:20%;transform:translateX(-50%);background:#000c;padding:8px 14px;border-radius:10px;display:none}
+</style></head><body><div id="app"><div id="world"><div class="cloud" style="top:10%;left:0">☁️</div><div class="cloud" style="top:25%;left:30%;animation-delay:-8s">☁️</div></div>
+<div id="top"><div class="stat">❤️ <span id="hpT">100/100</span><div class="meter"><i id="hp"></i></div></div><div class="stat">⚡ <span id="enT">100/100</span><div class="meter energy"><i id="en"></i></div></div><div class="stat">⭐ Lv.<span id="lv">1</span><div class="meter exp"><i id="xp"></i></div></div><div class="stat">🗺️ 第 <span id="st">1</span>/10 關</div></div>
+<div id="hero"><span class="hat">🧢</span>😠</div><div id="dialog"></div><div id="bossname"></div><div id="levelup">⭐ 升級！<br><button onclick="closeLevel()">繼續戰鬥</button></div><div id="toast"></div>
+<div id="controls"><div class="dpad"><button data-k="u">▲</button><button data-k="l">◀</button><button data-k="d">▼</button><button data-k="r">▶</button></div><div class="actions"><button class="atk" onclick="act('attack')">👊 攻擊<br>J / 空白</button><button class="sk" onclick="act('skill')">🔥 技能<br>K</button><button class="dg" onclick="act('dodge')">💨 閃躲<br>L</button><button class="hl" onclick="act('heal')">❤️ 補血</button><button class="en" onclick="act('energy')">⚡ 補能</button></div></div>
+<div id="menu"><div class="card"><div class="logo">🏴‍☠️</div><h1>海賊冒險 RPG</h1><div class="sub">頂上戰爭・拯救夥伴</div><p>選擇你的冒險者，突破海軍防線，前往處刑台。</p><div class="row"><button class="char sel" data-char="赤帽少年">🧢 赤帽少年<br>均衡</button><button class="char" data-char="三刀劍士">⚔️ 三刀劍士<br>高攻擊</button><button class="char" data-char="黑腳戰士">🔥 黑腳戰士<br>高速度</button></div><button class="mainbtn" onclick="start()">▶ 開始冒險</button><p class="small">手機觸控操作；鍵盤可用 WASD／方向鍵、J、K、L。<br>本作使用原創角色與素材，非官方作品。｜戰鬥強化版 V2</p></div></div>
+<script>
+const $=id=>document.getElementById(id), hero=$('hero'), world=$('world');let selected='赤帽少年',running=false,keys={},hp=100,en=100,xp=0,lv=1,stage=1,inv=0,cd=0,enemies=[],lock=true,transitioning=false;
+const data=[['突破海軍防線','👮',4,45],['冰霜強敵','🧊',1,180],['海軍隊長','⚓',5,70],['閃光將軍','✨',1,240],['巨人軍團','🗿',3,120],['中央包圍網','👮',7,65],['熔岩大將','🌋',1,300],['處刑台前哨','⛓️',6,85],['最後防線','🌋',1,420],['處刑台決戰','⛓️',1,520]];
+document.querySelectorAll('.char').forEach(b=>b.onpointerdown=()=>{document.querySelectorAll('.char').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');selected=b.dataset.char});
+function say(t,cb){let d=$('dialog');d.innerHTML=t+'<br><button class="continue">繼續</button>';d.style.display='block';d.querySelector('button').onclick=()=>{d.style.display='none';cb&&cb()}}
+function start(){ $('menu').style.display='none';running=true;hp=100;en=100;xp=0;lv=1;stage=1;transitioning=false;load()}
+function load(){lock=true;transitioning=false;$('bossname').style.display='none';enemies.forEach(e=>e.el.remove());enemies=[];$('st').textContent=stage;let d=data[stage-1];say('<b>第 '+stage+' 關｜'+d[0]+'</b><br>「前方就是敵軍！為了夥伴，衝過去！」',()=>{spawn(d[1],d[2],d[3]);lock=false})}
+function spawn(em,n,m){
+  for(let i=0;i<n;i++){
+    let e=document.createElement('div');
+    e.className='enemy '+(n===1?'boss bossin':'');
+    e.textContent=em;
+    G(e);let o={el:e,hp:m,max:m,dead:false,speed:.18+Math.random()*.18};e.style.left=(55+Math.random()*38)+'%';e.style.top=(25+Math.random()*48)+'%';if(n===1){$('bossname').textContent='👑 BOSS：'+data[stage-1][0];$('bossname').style.display='block';setTimeout(()=>{$('bossname').style.display='none'},1800)}let b=document.createElement('div');b.className='eb';b.innerHTML='<i></i>';e.appendChild(b);enemies.push(o)}}
+function G(e){document.getElementById('app').appendChild(e)}
+function bars(){$('hp').style.width=hp+'%';$('en').style.width=en+'%';$('xp').style.width=(xp%100)+'%';$('hpT').textContent=Math.round(hp)+'/100';$('enT').textContent=Math.round(en)+'/100';$('lv').textContent=lv}
+function pop(t,x,y){let p=document.createElement('div');p.textContent=t;p.style.cssText=`position:absolute;z-index:17;left:${x}px;top:${y}px;font-size:30px;font-weight:1000;color:#ffe14c;text-shadow:2px 2px #000;transition:.45s`;document.getElementById('app').appendChild(p);requestAnimationFrame(()=>{p.style.transform='translateY(-35px) scale(1.4)';p.style.opacity=0});setTimeout(()=>p.remove(),500)}
+function gain(n){xp+=n;if(xp>=100){xp-=100;lv++;hp=100;en=100;$('levelup').style.display='block';lock=true}bars()}
+function closeLevel(){$('levelup').style.display='none';lock=false}
+function fx(kind,e,text){
+  let p=document.createElement('div');
+  p.className=kind==='slash'?'slash':'';
+  p.textContent=text;
+  p.style.left=(e.el.offsetLeft+e.el.offsetWidth/2-24)+'px';
+  p.style.top=(e.el.offsetTop-12)+'px';
+  $('app').appendChild(p);
+  if(kind==='slash')setTimeout(()=>p.remove(),340);
+}
+function hitFx(e){
+  e.el.classList.remove('hitflash'); void e.el.offsetWidth; e.el.classList.add('hitflash');
+}
+function act(a){if(!running||lock)return;if(a==='attack'&&cd<=0){cd=.3;let hit=0;enemies.forEach(e=>{if(e.dead)return;let d=Math.hypot(e.el.offsetLeft-hero.offsetLeft,e.el.offsetTop-hero.offsetTop);if(d<145){let dmg=selected==='三刀劍士'?42:32;e.hp-=dmg;hit++;fx('slash',e,'⚔️');hitFx(e);pop('👊 '+dmg,e.el.offsetLeft,e.el.offsetTop-25);e.el.querySelector('i').style.width=Math.max(0,e.hp/e.max*100)+'%'}});if(hit)gain(hit*10)}
+if(a==='skill'&&en<35){toast('⚡ 能量不足！');return}if(a==='skill'&&en>=35){en-=35;enemies.forEach(e=>{if(e.dead)return;let d=Math.hypot(e.el.offsetLeft-hero.offsetLeft,e.el.offsetTop-hero.offsetTop);if(d<260){e.hp-=selected==='黑腳戰士'?105:90;fx('slash',e,'🔥');hitFx(e);pop('🔥 必殺!',e.el.offsetLeft,e.el.offsetTop-25);e.el.querySelector('i').style.width=Math.max(0,e.hp/e.max*100)+'%'}})}
+if(a==='dodge'){inv=.9;toast('💨 無敵閃避')}
+if(a==='heal'){hp=Math.min(100,hp+30);toast('❤️ +30 HP')}
+if(a==='energy'){en=Math.min(100,en+35);toast('⚡ +35 能量')}bars();check()}
+function check(){
+  // 先清除死亡敵人，再判斷是否過關；並且鎖定過關流程，避免同一關被重複觸發。
+  let alive=0;
+  enemies.forEach(e=>{
+    if(e.hp<=0&&!e.dead){e.dead=true;e.el.remove();gain(20)}
+    if(!e.dead) alive++;
+  });
+  if(enemies.length>0&&alive===0&&!transitioning){
+    transitioning=true;
+    lock=true;
+    const cleared=stage;
+    if(cleared===10){
+      running=false;
+      say('🎬 <b>恭喜通關！</b><br>你突破了最後防線，成功救出夥伴！<br>第一章完成！',()=>location.reload());
+    }else{
+      stage=cleared+1;
+      toast('✅ 第 '+cleared+' 關完成！');
+      setTimeout(()=>{ if(running) load(); },900);
+    }
+  }
+}
+function move(dx,dy){let l=Math.max(2,Math.min(94,hero.offsetLeft/window.innerWidth*100+dx)),t=Math.max(14,Math.min(72,hero.offsetTop/window.innerHeight*100+dy));hero.style.left=l+'%';hero.style.top=t+'%'}
+function toast(t){let x=$('toast');x.textContent=t;x.style.display='block';setTimeout(()=>x.style.display='none',800)}
+let last=performance.now();function loop(now){let dt=(now-last)/1000;last=now;if(running){cd=Math.max(0,cd-dt);inv=Math.max(0,inv-dt);let dx=0,dy=0;if(keys.w||keys.ArrowUp)dy-=.8;if(keys.s||keys.ArrowDown)dy+=.8;if(keys.a||keys.ArrowLeft)dx-=.8;if(keys.d||keys.ArrowRight)dx+=.8;if(dx||dy)move(dx,dy);enemies.forEach(e=>{if(e.dead)return;let ex=e.el.offsetLeft,ey=e.el.offsetTop,dx=hero.offsetLeft-ex,dy=hero.offsetTop-ey,d=Math.hypot(dx,dy);if(d>55){e.el.style.left=ex+dx/d*e.speed+'px';e.el.style.top=ey+dy/d*e.speed+'px'}else if(inv<=0){hp-=18*dt;if(hp<0){hp=100;toast('💥 倒地後復原')}}});bars();check()}requestAnimationFrame(loop)}requestAnimationFrame(loop);
+addEventListener('keydown',e=>{keys[e.key]=true;if(e.key===' '||e.key==='j')act('attack');if(e.key==='k')act('skill');if(e.key==='l')act('dodge')});addEventListener('keyup',e=>keys[e.key]=false);
+document.querySelectorAll('[data-k]').forEach(b=>{let k={u:'ArrowUp',d:'ArrowDown',l:'ArrowLeft',r:'ArrowRight'}[b.dataset.k];b.onpointerdown=()=>keys[k]=true;b.onpointerup=()=>keys[k]=false;b.onpointerleave=()=>keys[k]=false});
+bars();
+</script></div></body></html>
