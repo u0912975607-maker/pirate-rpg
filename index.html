@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-Hant"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>海賊冒險 RPG｜V6 精緻戰鬥版</title>
+<title>V8｜海賊冒險 RPG｜傷害規則修正版</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050b16;color:#fff;font-family:system-ui,"Noto Sans TC",sans-serif;touch-action:none}
 #app{position:relative;width:100vw;height:100dvh;overflow:hidden;background:linear-gradient(#54c8ef 0 45%,#123d5a 46% 57%,#b67b48 58%)}
@@ -119,51 +119,20 @@ button{backdrop-filter:blur(4px)}
 @keyframes stageFlash{0%{opacity:0}20%{opacity:1}100%{opacity:0}}
 .toast{box-shadow:0 5px 14px #0008}
 
-/* ===== V7 傷害系統重製 ===== */
-#combatLog{
-  position:absolute;z-index:16;left:4%;bottom:21%;width:min(330px,54vw);
-  max-height:118px;overflow:hidden;padding:8px 10px;border-radius:12px;
-  background:linear-gradient(180deg,#08111de8,#02060de8);
-  border:2px solid #d8a83e;box-shadow:0 6px 15px #0009;
-  font-size:12px;line-height:1.45;pointer-events:none
-}
-#combatLog b{color:#ffd34e}.logNormal{color:#fff}.logSkill{color:#ff9cff}.logCrit{color:#ff5b3d;font-weight:1000}
-.damage{
-  min-width:58px;text-align:center;font-size:32px!important;
-  padding:2px 7px;border-radius:12px;
-  background:linear-gradient(#fff,#ffe65b);
-  color:#c51717!important;text-shadow:2px 2px #fff,0 0 8px #ff8a00!important;
-  border:2px solid #fff;box-shadow:0 3px 8px #0008;
-  animation:dmgV7 .9s cubic-bezier(.15,.75,.25,1) forwards!important
-}
-.damage.crit{
-  min-width:100px;font-size:40px!important;
-  background:linear-gradient(#fff,#ffb52b,#ff5a21);
-  color:#fff!important;text-shadow:2px 2px #8d1200,0 0 12px #ff4a00!important;
-}
-@keyframes dmgV7{
-  0%{transform:translateY(8px) scale(.35);opacity:0}
-  12%{transform:translateY(0) scale(1.18);opacity:1}
-  30%{transform:translateY(-4px) scale(1)}
-  100%{transform:translateY(-82px) scale(1.12);opacity:0}
-}
-.damageTag{
- position:absolute;z-index:20;pointer-events:none;font-weight:1000;
- color:#ffe45c;font-size:14px;text-shadow:1px 2px #000;animation:tag .8s ease-out forwards
-}
-@keyframes tag{to{transform:translateY(-42px);opacity:0}}
-.hitflashV7{animation:hitV7 .24s ease-out}
-@keyframes hitV7{0%{filter:brightness(1)}25%{filter:brightness(3) saturate(2);transform:scale(1.13)}100%{filter:brightness(1);transform:scale(1)}}
-.enemy{z-index:3}
-.boss{z-index:4}
-@media(max-width:430px){
- #combatLog{bottom:22%;width:45vw;font-size:10px}
-}
-</style></head><body><div id="app"><div id="world"><div class="cloud" style="top:10%;left:0">☁️</div><div class="cloud" style="top:25%;left:30%;animation-delay:-8s">☁️</div></div>
+/* V7 checked damage system */
+#combatLog{position:absolute;z-index:18;left:4%;bottom:20%;width:min(310px,48vw);padding:8px 10px;border-radius:12px;background:#07111ee8;border:2px solid #e3b84c;box-shadow:0 5px 14px #0009;color:#fff;font-size:12px;line-height:1.45;pointer-events:none}
+#combatLog b{color:#ffd34e}
+.damage{position:absolute;z-index:25;min-width:52px;text-align:center;font-size:32px!important;font-weight:1000;padding:2px 7px;border-radius:10px;background:linear-gradient(#fff,#ffe45c);color:#c41414!important;text-shadow:1px 2px #fff,0 0 8px #ff7b00!important;border:2px solid #fff;box-shadow:0 3px 8px #0009;pointer-events:none;animation:v7dmg .9s ease-out forwards!important}
+.damage.crit{font-size:40px!important;min-width:92px;background:linear-gradient(#fff,#ffb52b,#ff4c20);color:#fff!important;text-shadow:2px 2px #7d1100,0 0 12px #ff4800!important}
+@keyframes v7dmg{0%{transform:translateY(8px) scale(.35);opacity:0}12%{transform:translateY(0) scale(1.2);opacity:1}35%{transform:translateY(-4px) scale(1)}100%{transform:translateY(-82px) scale(1.12);opacity:0}}
+.hitflashV7{animation:v7hit .24s ease-out}
+@keyframes v7hit{25%{filter:brightness(3) saturate(2);transform:scale(1.13)}100%{filter:none;transform:scale(1)}}
+@media(max-width:430px){#combatLog{width:45vw;font-size:10px;bottom:22%}}
+</style><style>#versionBadge{position:fixed;right:8px;top:8px;z-index:60;padding:4px 8px;border:1px solid #ffffff55;border-radius:999px;background:#0009;color:#ffd86a;font-size:10px;font-weight:900;pointer-events:none}</style></head><body><div id="versionBadge">V8 實機規則版</div><div id="app"><div id="world"><div class="cloud" style="top:10%;left:0">☁️</div><div class="cloud" style="top:25%;left:30%;animation-delay:-8s">☁️</div></div>
 <div id="top"><div class="stat">❤️ <span id="hpT">100/100</span><div class="meter"><i id="hp"></i></div></div><div class="stat">⚡ <span id="enT">100/100</span><div class="meter energy"><i id="en"></i></div></div><div class="stat">⭐ Lv.<span id="lv">1</span><div class="meter exp"><i id="xp"></i></div></div><div class="stat">🗺️ 第 <span id="st">1</span>/10 關</div></div>
-<div id="hero"><div class="heroAura"></div><div class="heroArt red"><div class="hair"></div><div class="hat"></div><div class="head"></div><i class="eye e1"></i><i class="eye e2"></i><i class="mouth"></i><div class="body"><div class="belt"></div></div><div class="sword"></div><i class="foot f1"></i><i class="foot f2"></i></div></div><div id="dialog"></div><div id="combo">連擊 0</div><div id="bossbar"><span id="bosslabel">BOSS</span><div class="bossmeter"><i id="bosshp"></i></div></div><div id="bossname"></div><div id="levelup">⭐ 升級！<br><button onclick="closeLevel()">繼續戰鬥</button></div><div id="toast"></div><div id="combatLog"><b>戰鬥紀錄</b><br><span id="log1">準備戰鬥…</span></div>
+<div id="hero"><div class="heroAura"></div><div class="heroArt red"><div class="hair"></div><div class="hat"></div><div class="head"></div><i class="eye e1"></i><i class="eye e2"></i><i class="mouth"></i><div class="body"><div class="belt"></div></div><div class="sword"></div><i class="foot f1"></i><i class="foot f2"></i></div></div><div id="dialog"></div><div id="combo">連擊 0</div><div id="bossbar"><span id="bosslabel">BOSS</span><div class="bossmeter"><i id="bosshp"></i></div></div><div id="bossname"></div><div id="levelup">⭐ 升級！<br><button onclick="closeLevel()">繼續戰鬥</button></div><div id="toast"></div><div id="combatLog"><b>⚔️ 戰鬥紀錄</b><br><span id="logText">準備戰鬥…</span></div>
 <div id="controls"><div class="dpad"><button data-k="u">▲</button><button data-k="l">◀</button><button data-k="d">▼</button><button data-k="r">▶</button></div><div class="actions"><button class="atk" onclick="act('attack')">👊 攻擊<br><small>J / 空白</small></button><button class="sk" onclick="act('skill')">🔥 技能<br><small>K</small></button><button class="dg" onclick="act('dodge')">💨 閃躲<br><small>L</small></button><button class="hl" onclick="act('heal')">❤️ 補血</button><button class="en" onclick="act('energy')">⚡ 補能</button></div></div>
-<div id="menu"><div class="card"><div class="logo">🏴‍☠️</div><h1>海賊冒險 RPG</h1><div class="sub">頂上戰爭・拯救夥伴</div><p>選擇你的冒險者，突破海軍防線，前往處刑台。</p><div class="row"><button class="char sel" data-char="赤帽少年">🧢 赤帽少年<br>均衡</button><button class="char" data-char="三刀劍士">⚔️ 三刀劍士<br>高攻擊</button><button class="char" data-char="黑腳戰士">🔥 黑腳戰士<br>高速度</button></div><button class="mainbtn" onclick="start()">▶ 開始冒險</button><p class="small">手機觸控操作；鍵盤可用 WASD／方向鍵、J、K、L。<br>本作使用原創角色與素材，非官方作品。｜V7｜傷害系統重製＋戰鬥特效</p></div></div>
+<div id="menu"><div class="card"><div class="logo">🏴‍☠️</div><h1>海賊冒險 RPG</h1><div class="sub">頂上戰爭・拯救夥伴</div><p>選擇你的冒險者，突破海軍防線，前往處刑台。</p><div class="row"><button class="char sel" data-char="赤帽少年">🧢 赤帽少年<br>均衡</button><button class="char" data-char="三刀劍士">⚔️ 三刀劍士<br>高攻擊</button><button class="char" data-char="黑腳戰士">🔥 黑腳戰士<br>高速度</button></div><button class="mainbtn" onclick="start()">▶ 開始冒險</button><p class="small">手機觸控操作；鍵盤可用 WASD／方向鍵、J、K、L。<br>本作使用原創角色與素材，非官方作品。｜V7｜傷害系統重製（已檢查）</p></div></div>
 <script>
 const $=id=>document.getElementById(id), hero=$('hero'), world=$('world');let selected='赤帽少年',running=false,keys={},hp=100,en=100,xp=0,lv=1,stage=1,inv=0,cd=0,enemies=[],lock=true,transitioning=false;
 const data=[
@@ -196,7 +165,7 @@ function spawn(em,n,m){
     let e=document.createElement('div');
     e.className='enemy '+(n===1?'boss bossin':'');
     e.textContent=em;
-    G(e);let o={el:e,hp:m,max:m,dead:false,speed:.18+Math.random()*.18};e.style.left=(n===1?'68%':(55+Math.random()*30))+'%';e.style.top=(n===1?(28+Math.random()*28):(24+Math.random()*34))+'%';if(n===1){
+    G(e);let o={el:e,hp:m,max:m,dead:false,speed:.18+Math.random()*.18};e.style.left=(n===1?'68%':(55+Math.random()*30))+'%';e.style.top=(25+Math.random()*30)+'%';if(n===1){
       $('bossname').textContent='👑 BOSS：'+data[stage-1][0];
       $('bossname').style.display='block';
       $('bossbar').style.display='block';
@@ -223,53 +192,47 @@ function hitFx(e){
 }
 let combo=0,comboTimer=0;
 function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+
+// ===== V8 傷害規則：不再被角色額外加成干擾 =====
 function normalDamageRange(){
-  // 明確固定成：Lv1=5~8、Lv2=6~9；之後每升1級上下限各+1。
-  const min=4+lv, max=7+lv;
-  return [min,max];
+  // 使用者指定：Lv1=5~8、Lv2=6~9、Lv3=7~10...
+  return [4+lv,7+lv];
 }
 function combatDamage(){
   const [min,max]=normalDamageRange();
-  let d=rand(min,max);
-  if(selected==='三刀劍士') d+=1;
-  if(selected==='黑腳戰士' && Math.random()<.2) d+=2;
-  return d;
+  // V8 硬性規則：普攻只允許本級範圍，不套用暴擊倍率。
+  return rand(min,max);
 }
 function skillDamageRange(){
-  // 技能：Lv1=13~19、Lv2=15~22，之後隨等級提升。
-  const min=11+lv*2, max=16+lv*3;
-  return [min,max];
+  // Lv1=12~18、Lv2=14~21、Lv3=16~24...
+  return [10+lv*2,15+lv*3];
 }
 function skillDamage(){
   const [min,max]=skillDamageRange();
-  let d=rand(min,max);
-  if(selected==='三刀劍士') d+=2;
-  if(selected==='黑腳戰士') d+=4;
-  return d;
+  return rand(min,max);
 }
-function addLog(text,cls='logNormal'){
+function addCombatLog(text){
   const box=$('combatLog');
-  box.innerHTML='<b>⚔️ 戰鬥紀錄</b><br><span class="'+cls+'">'+text+'</span>';
+  if(box) box.innerHTML='<b>⚔️ 戰鬥紀錄</b><br><span id="logText">'+text+'</span>';
 }
 function damagePop(t,x,y,crit=false){
-  let p=document.createElement('div');p.className='damage'+(crit?' crit':'');p.textContent=t;
-  p.style.left=Math.max(8,Math.min(window.innerWidth-90,x))+'px';
-  p.style.top=Math.max(130,y)+'px';$('app').appendChild(p);setTimeout(()=>p.remove(),920)
-}
-function damageTag(t,x,y){
-  let p=document.createElement('div');p.className='damageTag';p.textContent=t;
-  p.style.left=Math.max(8,Math.min(window.innerWidth-120,x))+'px';p.style.top=Math.max(120,y)+'px';
-  $('app').appendChild(p);setTimeout(()=>p.remove(),820)
-}
-(t,x,y,crit=false){
-  let p=document.createElement('div');p.className='damage'+(crit?' crit':'');p.textContent=t;
-  p.style.left=x+'px';p.style.top=y+'px';$('app').appendChild(p);setTimeout(()=>p.remove(),720)
+  let p=document.createElement('div');
+  p.className='damage'+(crit?' crit':'');
+  p.textContent=t;
+  p.style.left=Math.max(8,Math.min(window.innerWidth-105,x))+'px';
+  p.style.top=Math.max(120,y)+'px';
+  $('app').appendChild(p);
+  setTimeout(()=>p.remove(),920);
 }
 function attackFX(e,dmg,crit=false,label='普通攻擊'){
-  const x=e.el.offsetLeft+e.el.offsetWidth/2,y=e.el.offsetTop-12;
-  fx('slash',e,'⚔️');e.el.classList.remove('hitflashV7');void e.el.offsetWidth;e.el.classList.add('hitflashV7');
-  damagePop('-'+dmg,x,y,crit);damageTag(label+'  -'+dmg,x-28,y-25);
-  let r=document.createElement('div');r.className='ring';r.style.left=x+'px';r.style.top=(e.el.offsetTop+e.el.offsetHeight/2)+'px';$('app').appendChild(r);setTimeout(()=>r.remove(),560);
+  const x=e.el.offsetLeft+e.el.offsetWidth/2;
+  const y=e.el.offsetTop-14;
+  fx('slash',e,'⚔️');
+  e.el.classList.remove('hitflashV7');void e.el.offsetWidth;e.el.classList.add('hitflashV7');
+  damagePop('-'+dmg,x,y,crit);
+  let r=document.createElement('div');r.className='ring';
+  r.style.left=x+'px';r.style.top=(e.el.offsetTop+e.el.offsetHeight/2)+'px';
+  $('app').appendChild(r);setTimeout(()=>r.remove(),560);
 }
 function skillFX(){
   const x=hero.offsetLeft+hero.offsetWidth/2,y=hero.offsetTop+hero.offsetHeight/2;
@@ -279,18 +242,38 @@ function skillFX(){
 function act(a){
  if(!running||lock)return;
  if(a==='attack'&&cd<=0){
-   cd=.32;combo++;comboTimer=2.2;$('combo').textContent='連擊 '+combo+' HIT';$('combo').style.opacity=1;
+   cd=.32;combo++;comboTimer=2.2;
+   $('combo').textContent='連擊 '+combo+' HIT';$('combo').style.opacity=1;
    let hit=0;
-   enemies.forEach(e=>{if(e.dead)return;let d=Math.hypot(e.el.offsetLeft-hero.offsetLeft,e.el.offsetTop-hero.offsetTop);
-     if(d<145){let dmg=combatDamage();let crit=Math.random()<.08;if(crit)dmg*=2;e.hp-=dmg;hit++;attackFX(e,dmg,crit,'普通攻擊'+(crit?'・暴擊':''));addLog('Lv.'+lv+' 普通攻擊：<b>'+dmg+'</b> 點傷害'+(crit?'　<span class="logCrit">暴擊！</span>':'')+'<br>本級範圍：'+normalDamageRange()[0]+'～'+normalDamageRange()[1]);e.el.querySelector('i').style.width=Math.max(0,e.hp/e.max*100)+'%'}
+   enemies.forEach(e=>{
+     if(e.dead)return;
+     let d=Math.hypot(e.el.offsetLeft-hero.offsetLeft,e.el.offsetTop-hero.offsetTop);
+     if(d<145){
+       let dmg=combatDamage();
+       // V8：普通攻擊嚴格遵守等級傷害範圍，不再乘暴擊倍數。
+       e.hp-=dmg;hit++;
+       attackFX(e,dmg,false,'普通攻擊');
+       addCombatLog('Lv.'+lv+' 普攻：<b>'+dmg+'</b> 點<br>本級範圍：'+normalDamageRange()[0]+'～'+normalDamageRange()[1]);
+       e.el.querySelector('i').style.width=Math.max(0,e.hp/e.max*100)+'%';
+     }
    });
    if(hit)gain(hit*8);
  }
  if(a==='skill'&&en<35){toast('⚡ 能量不足！');return}
  if(a==='skill'&&en>=35){
    en-=35;skillFX();toast('🔥 技能爆發！');
-   enemies.forEach(e=>{if(e.dead)return;let d=Math.hypot(e.el.offsetLeft-hero.offsetLeft,e.el.offsetTop-hero.offsetTop);
-     if(d<260){let dmg=skillDamage();let crit=Math.random()<.12;if(crit)dmg*=2;e.hp-=dmg;attackFX(e,dmg,crit,'🔥 技能'+(crit?'・暴擊':''));addLog('Lv.'+lv+' 🔥 技能：<b>'+dmg+'</b> 點傷害'+(crit?'　<span class="logCrit">暴擊！</span>':'')+'<br>技能範圍：'+skillDamageRange()[0]+'～'+skillDamageRange()[1]);e.el.querySelector('i').style.width=Math.max(0,e.hp/e.max*100)+'%'}
+   enemies.forEach(e=>{
+     if(e.dead)return;
+     let d=Math.hypot(e.el.offsetLeft-hero.offsetLeft,e.el.offsetTop-hero.offsetTop);
+     if(d<260){
+       let dmg=skillDamage();
+       let crit=Math.random()<.12;
+       if(crit)dmg*=2;
+       e.hp-=dmg;
+       attackFX(e,dmg,crit,'🔥 技能');
+       addCombatLog('Lv.'+lv+' 🔥 技能：<b>'+dmg+'</b> 點'+(crit?'　<b>🔥 暴擊！</b>':'')+'<br>技能範圍：'+skillDamageRange()[0]+'～'+skillDamageRange()[1]);
+       e.el.querySelector('i').style.width=Math.max(0,e.hp/e.max*100)+'%';
+     }
    });
  }
  if(a==='dodge'){inv=.9;toast('💨 無敵閃避')}
