@@ -1,46 +1,303 @@
 <!doctype html>
 <html lang="zh-Hant"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>海賊冒險 RPG</title>
+<title>海賊冒險 RPG｜V6 精緻戰鬥版</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050b16;color:#fff;font-family:system-ui,"Noto Sans TC",sans-serif;touch-action:none}
 #app{position:relative;width:100vw;height:100dvh;overflow:hidden;background:linear-gradient(#54c8ef 0 45%,#123d5a 46% 57%,#b67b48 58%)}
 #world{position:absolute;inset:0;background:radial-gradient(circle at 75% 14%,#fff9 0 4%,transparent 13%),linear-gradient(#46c3ed,#b9e8f4 43%,#347d98 44%,#092d48 62%,#b87945 63%);transition:.4s}
 .cloud{position:absolute;font-size:60px;opacity:.55;animation:cloud 18s linear infinite}@keyframes cloud{from{transform:translateX(-130px)}to{transform:translateX(110vw)}}
 #top{position:absolute;top:calc(8px + env(safe-area-inset-top));left:8px;right:8px;z-index:5;display:flex;gap:6px;flex-wrap:wrap}.stat{background:#06111dcc;border:1px solid #fff7;border-radius:12px;padding:4px 7px;font-size:11px}.meter{width:110px;height:9px;background:#222;border-radius:6px;overflow:hidden;margin-top:3px}.meter i{display:block;height:100%;width:100%;background:#e33}.energy i{background:#29a9ff}.exp i{background:#ffd332}
-#hero{position:absolute;width:54px;height:68px;left:18%;top:53%;z-index:3;border-radius:18px 18px 10px 10px;background:#c92c32;border:2px solid #fff8;box-shadow:0 5px 12px #0008;font-size:34px;text-align:center;padding-top:19px}.hat{position:absolute;top:-29px;left:3px;font-size:42px}
-.enemy{position:absolute;z-index:2;width:50px;height:62px;border-radius:14px;background:#253c68;border:2px solid #fff8;text-align:center;font-size:30px;padding-top:12px;box-shadow:0 4px 8px #0008}.boss{width:78px;height:90px;font-size:46px;background:#a9281e;border:3px solid #ffd34e}.eb{position:absolute;left:2px;right:2px;top:-10px;height:7px;background:#111;border:1px solid #fff}.eb i{display:block;height:100%;background:#55e05d}
+#hero{position:absolute;width:74px;height:92px;left:18%;top:53%;z-index:3;filter:drop-shadow(0 8px 8px #0008);transition:filter .15s}
+.heroArt{position:relative;width:100%;height:100%}.body{position:absolute;left:12px;bottom:0;width:50px;height:58px;border-radius:20px 20px 13px 13px;border:2px solid #fff9;box-shadow:inset 0 0 0 2px #0002}.head{position:absolute;left:19px;top:15px;width:36px;height:36px;border-radius:50%;background:#ffd1a6;border:2px solid #5d3020;z-index:3}.hair{position:absolute;left:15px;top:8px;width:44px;height:22px;border-radius:50% 50% 25% 25%;background:#201a18;z-index:4}.eye{position:absolute;top:29px;width:5px;height:5px;border-radius:50%;background:#111;z-index:5}.e1{left:27px}.e2{left:42px}.mouth{position:absolute;left:30px;top:41px;width:14px;height:6px;border-bottom:2px solid #9b3028;border-radius:50%;z-index:5}.hat{position:absolute;left:8px;top:-2px;width:58px;height:22px;border-radius:50% 50% 35% 35%;background:#d92f36;border:2px solid #fff8;z-index:6;transform:rotate(-7deg)}.hat:after{content:'';position:absolute;left:7px;right:7px;bottom:-4px;height:7px;border-radius:50%;background:#d92f36;border:2px solid #fff8}.belt{position:absolute;left:11px;right:11px;top:43px;height:8px;background:#e5bd43;border:2px solid #5b3815;border-radius:5px;z-index:5}.sword{position:absolute;right:-6px;top:22px;width:8px;height:60px;background:linear-gradient(90deg,#fff,#a9d6ff,#fff);border:1px solid #345;transform:rotate(27deg);z-index:7;box-shadow:0 0 6px #8bd}.foot{position:absolute;bottom:-4px;width:20px;height:11px;border-radius:50%;background:#171b27;z-index:1}.f1{left:13px}.f2{right:13px}
+.heroArt.swords .body{background:linear-gradient(#344c82,#1b2b53)}.heroArt.swords .hair{background:#111}.heroArt.swords .hat{display:none}.heroArt.swords .sword{display:block}.heroArt.black .body{background:linear-gradient(#252525,#111)}.heroArt.black .hair{background:#1c1110}.heroArt.black .hat{display:none}.heroArt.black .body:after{content:'🔥';position:absolute;right:-13px;top:4px;font-size:22px}.heroArt.red .sword{display:none}
+.heroArt.red .body{background:linear-gradient(#e33a42,#a61e2b)}
+.slash{position:absolute;z-index:14;font-size:48px;pointer-events:none;animation:slash .32s ease-out forwards}@keyframes slash{0%{transform:scale(.45) rotate(-25deg);opacity:0}35%{transform:scale(1.15) rotate(12deg);opacity:1}100%{transform:scale(1.5) rotate(35deg);opacity:0}}.hitflash{animation:hitflash .18s ease-out}@keyframes hitflash{50%{filter:brightness(2.5) saturate(1.7);transform:scale(1.12)}100%{filter:none;transform:scale(1)}}.bossin{animation:bossin .6s ease-out}@keyframes bossin{0%{transform:translateX(80px) scale(.5);opacity:0}70%{transform:translateX(-6px) scale(1.08);opacity:1}100%{transform:translateX(0) scale(1);opacity:1}}.enemy{position:absolute;z-index:2;width:50px;height:62px;border-radius:14px;background:#253c68;border:2px solid #fff8;text-align:center;font-size:30px;padding-top:12px;box-shadow:0 4px 8px #0008}.boss{width:78px;height:90px;font-size:46px;background:#a9281e;border:3px solid #ffd34e}.eb{position:absolute;left:2px;right:2px;top:-10px;height:7px;background:#111;border:1px solid #fff}.eb i{display:block;height:100%;background:#55e05d}
 #dialog{position:absolute;z-index:15;left:5%;right:5%;bottom:24%;background:#06111eee;border:2px solid #e8bd4d;border-radius:15px;padding:13px;display:none;text-align:center}.continue{margin-top:9px;padding:8px 20px;border:0;border-radius:9px;background:#e8bd4d;font-weight:900}
 #controls{position:absolute;z-index:10;left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom));display:flex;justify-content:space-between;align-items:end}
 .dpad{display:grid;grid-template-columns:52px 52px 52px;grid-template-rows:46px 46px}.dpad button:nth-child(1){grid-column:2}.dpad button:nth-child(2){grid-row:2}.dpad button:nth-child(3){grid-row:2;grid-column:2}.dpad button:nth-child(4){grid-row:2;grid-column:3}
-.actions{display:grid;grid-template-columns:70px 70px;gap:6px}.actions button{height:55px}
-button{color:#fff;background:#102a46dd;border:2px solid #ffffffaa;border-radius:14px;font-weight:900;font-size:13px;box-shadow:0 4px 9px #0008}.atk{background:#a9262add}.sk{background:#7139a8dd}.dg{background:#84621add}.hl{background:#187541dd}.en{background:#12699bdd}
-#menu{position:absolute;z-index:20;inset:0;background:linear-gradient(#06182aeF,#020711F5);display:flex;align-items:center;justify-content:center;text-align:center;padding:20px}.card{width:min(500px,92vw)}h1{font-size:34px;margin:4px 0}.logo{font-size:70px}.sub{color:#ffd85b;font-weight:900;font-size:18px}.row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px 0}.char{padding:12px 15px;min-width:105px}.char.sel{outline:3px solid #ffd34e;background:#334b67}.mainbtn{padding:14px 40px;font-size:18px;background:#c82d32}.small{font-size:12px;opacity:.65;line-height:1.5}
+.actions{display:grid;grid-template-columns:82px 82px;gap:8px}.actions button{height:62px;min-width:0}.actions .en{grid-column:1 / 3}
+button{color:#fff;background:#102a46ee;border:2px solid #ffffffaa;border-radius:16px;font-weight:900;font-size:14px;box-shadow:0 5px 11px #0008;transition:transform .08s,filter .12s}button:active{transform:scale(.94);filter:brightness(1.18)}.atk{background:linear-gradient(145deg,#ef4b45,#9c1820)}.sk{background:linear-gradient(145deg,#9b5ae0,#55208c)}.dg{background:linear-gradient(145deg,#aa7b26,#6d4b12)}.hl{background:linear-gradient(145deg,#2ba85e,#126234)}.en{background:linear-gradient(145deg,#2f93d2,#14557c)}
+#menu{position:absolute;z-index:20;inset:0;background:linear-gradient(#06182aeF,#020711F5);display:flex;align-items:center;justify-content:center;text-align:center;padding:20px}.card{width:min(500px,92vw)}h1{font-size:34px;margin:4px 0}.logo{font-size:70px}.sub{color:#ffd85b;font-weight:900;font-size:18px}.row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px 0}.char{padding:10px 12px;min-width:118px;min-height:82px;background:linear-gradient(145deg,#183b5d,#10253b);border-color:#ffffff55}.char.sel{outline:3px solid #ffd34e;background:linear-gradient(145deg,#31597c,#183a58);transform:translateY(-2px)}.mainbtn{padding:14px 40px;font-size:18px;background:#c82d32}.small{font-size:12px;opacity:.65;line-height:1.5}
 #levelup{position:absolute;z-index:16;left:50%;top:35%;transform:translate(-50%,-50%);background:#101b2cf2;border:2px solid #ffd34e;border-radius:16px;padding:18px;text-align:center;display:none;min-width:230px}
-#toast{position:absolute;z-index:18;left:50%;bottom:20%;transform:translateX(-50%);background:#000c;padding:8px 14px;border-radius:10px;display:none}
+#combo{position:absolute;z-index:15;right:5%;top:17%;font-size:18px;font-weight:1000;text-shadow:2px 2px #000;opacity:0;transition:.15s}#bossbar{position:absolute;z-index:14;left:50%;top:11%;transform:translateX(-50%);width:min(520px,72vw);display:none;background:#111b2be8;border:2px solid #ffd34e;border-radius:12px;padding:6px 10px;text-align:center;font-weight:900}.bossmeter{height:10px;background:#42151a;border-radius:8px;overflow:hidden;margin-top:4px}.bossmeter i{display:block;width:100%;height:100%;background:#e52f38;transition:.12s}#bossname{position:absolute;z-index:14;left:50%;top:20%;transform:translateX(-50%);background:#a9281eee;border:2px solid #ffd34e;border-radius:14px;padding:8px 18px;font-weight:1000;font-size:20px;display:none;text-align:center;text-shadow:2px 2px #000;white-space:nowrap}#toast{position:absolute;z-index:18;left:50%;bottom:20%;transform:translateX(-50%);background:#000c;padding:8px 14px;border-radius:10px;display:none}
+
+.damage{position:absolute;z-index:19;font-size:25px;font-weight:1000;color:#fff;text-shadow:2px 2px 0 #5b0000,0 0 8px #ffb000;pointer-events:none;animation:dmgFloat .7s ease-out forwards}.damage.crit{font-size:31px;color:#ffe65b}.skillBurst{position:absolute;z-index:13;font-size:64px;pointer-events:none;animation:burst .55s ease-out forwards}.ring{position:absolute;z-index:12;width:20px;height:20px;border:4px solid #ffd34e;border-radius:50%;pointer-events:none;animation:ring .55s ease-out forwards}@keyframes dmgFloat{0%{transform:translateY(0) scale(.7);opacity:0}15%{opacity:1}100%{transform:translateY(-58px) scale(1.18);opacity:0}}@keyframes burst{0%{transform:translate(-50%,-50%) scale(.3) rotate(-20deg);opacity:0}35%{opacity:1}100%{transform:translate(-50%,-50%) scale(1.5) rotate(18deg);opacity:0}}@keyframes ring{0%{transform:translate(-50%,-50%) scale(.3);opacity:1}100%{transform:translate(-50%,-50%) scale(9);opacity:0}}.heroSkill{animation:heroSkill .42s ease-out}@keyframes heroSkill{35%{filter:brightness(2) drop-shadow(0 0 18px #ff6)}70%{transform:scale(1.15) rotate(-5deg)}100%{filter:drop-shadow(0 8px 8px #0008);transform:none}}
+
+/* ===== V6 RPG 視覺強化 ===== */
+#app{background:#071321}
+#world{
+  background:
+    radial-gradient(circle at 78% 13%,rgba(255,255,255,.95) 0 2%,rgba(255,255,255,.18) 8%,transparent 18%),
+    linear-gradient(180deg,#31bce9 0%,#a9e6f5 38%,#2e7894 39%,#0b314b 62%,#a86f40 63%,#c68a50 100%);
+}
+#world:before{
+  content:"";position:absolute;left:-10%;right:-10%;top:43%;height:20%;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.12) 0 2px,transparent 2px 14px);
+  transform:skewY(-2deg);opacity:.55;animation:wave 3.8s linear infinite;
+}
+#world:after{
+  content:"";position:absolute;left:0;right:0;bottom:35%;height:3px;
+  background:linear-gradient(90deg,transparent,#d9fbff,transparent);opacity:.6;
+}
+@keyframes wave{from{transform:translateX(-2%) skewY(-2deg)}to{transform:translateX(2%) skewY(-2deg)}}
+
+.heroAura{
+  position:absolute;inset:-16px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,210,70,.22),transparent 58%);
+  filter:blur(5px);animation:aura 1.8s ease-in-out infinite alternate;pointer-events:none;
+}
+@keyframes aura{to{transform:scale(1.18);opacity:.55}}
+
+#hero{width:86px;height:108px;filter:drop-shadow(0 10px 9px #0009)}
+.heroArt .body{
+  left:10px;width:58px;height:66px;border-radius:24px 24px 16px 16px;
+  border:2px solid rgba(255,255,255,.72);
+  box-shadow:inset 0 4px 0 rgba(255,255,255,.2),inset 0 -8px 12px #0004,0 2px 8px #0004;
+}
+.heroArt .head{left:24px;top:13px;width:40px;height:40px;box-shadow:inset 0 -5px 6px #b96d4b55}
+.heroArt .hair{left:19px;top:4px;width:50px;height:25px}
+.heroArt .eye{top:29px;width:6px;height:6px;box-shadow:0 0 2px #fff}
+.heroArt .e1{left:31px}.heroArt .e2{left:48px}
+.heroArt .mouth{left:34px;top:43px;width:15px}
+.heroArt .hat{left:9px;top:-5px;width:68px;height:25px;box-shadow:0 3px 5px #0004}
+.heroArt .belt{left:10px;right:10px;top:47px;height:9px}
+.heroArt .foot{bottom:-5px;width:23px;height:13px}
+.heroArt .f1{left:12px}.heroArt .f2{right:12px}
+.heroArt.red .body{background:linear-gradient(135deg,#ff5a50,#c41e31 58%,#761321)}
+.heroArt.red .body:before{
+  content:"★";position:absolute;left:21px;top:14px;font-size:18px;color:#ffd64c;text-shadow:0 1px 2px #5b2100;
+}
+.heroArt.swords .body{background:linear-gradient(135deg,#4d73b6,#20365f 65%,#111d36)}
+.heroArt.swords .body:before,.heroArt.swords .body:after{
+  content:"";position:absolute;bottom:10px;width:5px;height:44px;border-radius:4px;background:linear-gradient(#fff,#9ddcff,#fff);
+  box-shadow:0 0 7px #8ed8ff;
+}
+.heroArt.swords .body:before{left:-2px;transform:rotate(24deg)}
+.heroArt.swords .body:after{right:-2px;transform:rotate(-24deg)}
+.heroArt.black .body{background:linear-gradient(135deg,#444,#181818 62%,#080808)}
+.heroArt.black .body:before{
+  content:"✦";position:absolute;left:21px;top:13px;color:#ffb42e;font-size:20px;text-shadow:0 0 9px #ff5b18;
+}
+.heroArt.black .body:after{
+  content:"";position:absolute;right:-17px;top:8px;width:10px;height:45px;border-radius:50%;
+  background:linear-gradient(90deg,#ff4d00,#ffd34d,#ff3b00);filter:blur(2px);transform:rotate(-20deg);
+}
+.enemy{
+  background:linear-gradient(145deg,#334f7c,#14243f);
+  border:2px solid rgba(255,255,255,.75);
+  box-shadow:0 5px 12px #0009,inset 0 2px 0 #fff3;
+}
+.enemy:not(.boss):after{
+  content:"";position:absolute;left:9px;right:9px;bottom:6px;height:5px;border-radius:5px;
+  background:linear-gradient(90deg,#ff4d4d,#ffb52e);opacity:.75;
+}
+.boss{
+  width:86px;height:98px;font-size:50px;
+  background:radial-gradient(circle at 35% 25%,#ff6a44,#a51e25 58%,#57101b);
+  border:3px solid #ffd34e;
+  box-shadow:0 8px 18px #000b,0 0 20px #ff4b3155,inset 0 2px 0 #fff5;
+}
+.boss:before{
+  content:"";position:absolute;left:50%;top:50%;width:78px;height:78px;
+  transform:translate(-50%,-50%);border:2px solid #ffcf4a66;border-radius:50%;animation:bossAura 1.1s ease-in-out infinite alternate;
+}
+@keyframes bossAura{to{transform:translate(-50%,-50%) scale(1.12);opacity:.3}}
+
+#bossbar{top:10%;width:min(560px,78vw);box-shadow:0 4px 12px #0008}
+#bossname{top:18%;font-size:19px;box-shadow:0 4px 12px #0009}
+
+.actions{grid-template-columns:88px 88px;gap:7px}
+.actions button{height:60px;font-size:14px}
+.dpad button{font-size:20px}
+button{backdrop-filter:blur(4px)}
+.damage{font-size:27px;color:#fff7d2;text-shadow:2px 2px #5a0900,0 0 10px #ff6a00}
+.damage.crit{font-size:34px;color:#fff36b;animation:dmgCrit .72s ease-out forwards}
+@keyframes dmgCrit{0%{transform:scale(.45);opacity:0}15%{opacity:1}40%{transform:scale(1.3)}100%{transform:translateY(-70px) scale(1.55);opacity:0}}
+.skillBurst{filter:drop-shadow(0 0 12px #ffd43b)}
+.stageFlash{position:absolute;inset:0;z-index:21;background:radial-gradient(circle,#fff8,transparent 55%);pointer-events:none;animation:stageFlash .55s ease-out forwards}
+@keyframes stageFlash{0%{opacity:0}20%{opacity:1}100%{opacity:0}}
+.toast{box-shadow:0 5px 14px #0008}
+
+/* ===== V7 傷害系統重製 ===== */
+#combatLog{
+  position:absolute;z-index:16;left:4%;bottom:21%;width:min(330px,54vw);
+  max-height:118px;overflow:hidden;padding:8px 10px;border-radius:12px;
+  background:linear-gradient(180deg,#08111de8,#02060de8);
+  border:2px solid #d8a83e;box-shadow:0 6px 15px #0009;
+  font-size:12px;line-height:1.45;pointer-events:none
+}
+#combatLog b{color:#ffd34e}.logNormal{color:#fff}.logSkill{color:#ff9cff}.logCrit{color:#ff5b3d;font-weight:1000}
+.damage{
+  min-width:58px;text-align:center;font-size:32px!important;
+  padding:2px 7px;border-radius:12px;
+  background:linear-gradient(#fff,#ffe65b);
+  color:#c51717!important;text-shadow:2px 2px #fff,0 0 8px #ff8a00!important;
+  border:2px solid #fff;box-shadow:0 3px 8px #0008;
+  animation:dmgV7 .9s cubic-bezier(.15,.75,.25,1) forwards!important
+}
+.damage.crit{
+  min-width:100px;font-size:40px!important;
+  background:linear-gradient(#fff,#ffb52b,#ff5a21);
+  color:#fff!important;text-shadow:2px 2px #8d1200,0 0 12px #ff4a00!important;
+}
+@keyframes dmgV7{
+  0%{transform:translateY(8px) scale(.35);opacity:0}
+  12%{transform:translateY(0) scale(1.18);opacity:1}
+  30%{transform:translateY(-4px) scale(1)}
+  100%{transform:translateY(-82px) scale(1.12);opacity:0}
+}
+.damageTag{
+ position:absolute;z-index:20;pointer-events:none;font-weight:1000;
+ color:#ffe45c;font-size:14px;text-shadow:1px 2px #000;animation:tag .8s ease-out forwards
+}
+@keyframes tag{to{transform:translateY(-42px);opacity:0}}
+.hitflashV7{animation:hitV7 .24s ease-out}
+@keyframes hitV7{0%{filter:brightness(1)}25%{filter:brightness(3) saturate(2);transform:scale(1.13)}100%{filter:brightness(1);transform:scale(1)}}
+.enemy{z-index:3}
+.boss{z-index:4}
+@media(max-width:430px){
+ #combatLog{bottom:22%;width:45vw;font-size:10px}
+}
 </style></head><body><div id="app"><div id="world"><div class="cloud" style="top:10%;left:0">☁️</div><div class="cloud" style="top:25%;left:30%;animation-delay:-8s">☁️</div></div>
 <div id="top"><div class="stat">❤️ <span id="hpT">100/100</span><div class="meter"><i id="hp"></i></div></div><div class="stat">⚡ <span id="enT">100/100</span><div class="meter energy"><i id="en"></i></div></div><div class="stat">⭐ Lv.<span id="lv">1</span><div class="meter exp"><i id="xp"></i></div></div><div class="stat">🗺️ 第 <span id="st">1</span>/10 關</div></div>
-<div id="hero"><span class="hat">🧢</span>😠</div><div id="dialog"></div><div id="levelup">⭐ 升級！<br><button onclick="closeLevel()">繼續戰鬥</button></div><div id="toast"></div>
-<div id="controls"><div class="dpad"><button data-k="u">▲</button><button data-k="l">◀</button><button data-k="d">▼</button><button data-k="r">▶</button></div><div class="actions"><button class="atk" onclick="act('attack')">👊 攻擊<br>J / 空白</button><button class="sk" onclick="act('skill')">🔥 技能<br>K</button><button class="dg" onclick="act('dodge')">💨 閃躲<br>L</button><button class="hl" onclick="act('heal')">❤️ 補血</button><button class="en" onclick="act('energy')">⚡ 補能</button></div></div>
-<div id="menu"><div class="card"><div class="logo">🏴‍☠️</div><h1>海賊冒險 RPG</h1><div class="sub">頂上戰爭・拯救夥伴</div><p>選擇你的冒險者，突破海軍防線，前往處刑台。</p><div class="row"><button class="char sel" data-char="赤帽少年">🧢 赤帽少年<br>均衡</button><button class="char" data-char="三刀劍士">⚔️ 三刀劍士<br>高攻擊</button><button class="char" data-char="黑腳戰士">🔥 黑腳戰士<br>高速度</button></div><button class="mainbtn" onclick="start()">▶ 開始冒險</button><p class="small">手機觸控操作；鍵盤可用 WASD／方向鍵、J、K、L。<br>本作使用原創角色與素材，非官方作品。</p></div></div>
+<div id="hero"><div class="heroAura"></div><div class="heroArt red"><div class="hair"></div><div class="hat"></div><div class="head"></div><i class="eye e1"></i><i class="eye e2"></i><i class="mouth"></i><div class="body"><div class="belt"></div></div><div class="sword"></div><i class="foot f1"></i><i class="foot f2"></i></div></div><div id="dialog"></div><div id="combo">連擊 0</div><div id="bossbar"><span id="bosslabel">BOSS</span><div class="bossmeter"><i id="bosshp"></i></div></div><div id="bossname"></div><div id="levelup">⭐ 升級！<br><button onclick="closeLevel()">繼續戰鬥</button></div><div id="toast"></div><div id="combatLog"><b>戰鬥紀錄</b><br><span id="log1">準備戰鬥…</span></div>
+<div id="controls"><div class="dpad"><button data-k="u">▲</button><button data-k="l">◀</button><button data-k="d">▼</button><button data-k="r">▶</button></div><div class="actions"><button class="atk" onclick="act('attack')">👊 攻擊<br><small>J / 空白</small></button><button class="sk" onclick="act('skill')">🔥 技能<br><small>K</small></button><button class="dg" onclick="act('dodge')">💨 閃躲<br><small>L</small></button><button class="hl" onclick="act('heal')">❤️ 補血</button><button class="en" onclick="act('energy')">⚡ 補能</button></div></div>
+<div id="menu"><div class="card"><div class="logo">🏴‍☠️</div><h1>海賊冒險 RPG</h1><div class="sub">頂上戰爭・拯救夥伴</div><p>選擇你的冒險者，突破海軍防線，前往處刑台。</p><div class="row"><button class="char sel" data-char="赤帽少年">🧢 赤帽少年<br>均衡</button><button class="char" data-char="三刀劍士">⚔️ 三刀劍士<br>高攻擊</button><button class="char" data-char="黑腳戰士">🔥 黑腳戰士<br>高速度</button></div><button class="mainbtn" onclick="start()">▶ 開始冒險</button><p class="small">手機觸控操作；鍵盤可用 WASD／方向鍵、J、K、L。<br>本作使用原創角色與素材，非官方作品。｜V7｜傷害系統重製＋戰鬥特效</p></div></div>
 <script>
 const $=id=>document.getElementById(id), hero=$('hero'), world=$('world');let selected='赤帽少年',running=false,keys={},hp=100,en=100,xp=0,lv=1,stage=1,inv=0,cd=0,enemies=[],lock=true,transitioning=false;
-const data=[['突破海軍防線','👮',4,45],['冰霜強敵','🧊',1,180],['海軍隊長','⚓',5,70],['閃光將軍','✨',1,240],['巨人軍團','🗿',3,120],['中央包圍網','👮',7,65],['熔岩大將','🌋',1,300],['處刑台前哨','⛓️',6,85],['最後防線','🌋',1,420],['處刑台決戰','⛓️',1,520]];
+const data=[
+['突破海軍防線','👮',4,45,'港口防線'],
+['冰霜強敵','🧊',1,180,'冰霜巨門'],
+['海軍隊長','⚓',5,70,'指揮部'],
+['閃光將軍','✨',1,240,'高速突襲'],
+['巨人軍團','🗿',3,120,'巨人廣場'],
+['中央包圍網','👮',7,65,'中央戰場'],
+['熔岩大將','🌋',1,300,'熔岩峽谷'],
+['處刑台前哨','⛓️',6,85,'最後通道'],
+['最後防線','🌋',1,420,'絕境防線'],
+['處刑台決戰','⛓️',1,520,'處刑台決戰']
+];
 document.querySelectorAll('.char').forEach(b=>b.onpointerdown=()=>{document.querySelectorAll('.char').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');selected=b.dataset.char});
 function say(t,cb){let d=$('dialog');d.innerHTML=t+'<br><button class="continue">繼續</button>';d.style.display='block';d.querySelector('button').onclick=()=>{d.style.display='none';cb&&cb()}}
-function start(){ $('menu').style.display='none';running=true;hp=100;en=100;xp=0;lv=1;stage=1;transitioning=false;load()}
-function load(){lock=true;transitioning=false;enemies.forEach(e=>e.el.remove());enemies=[];$('st').textContent=stage;let d=data[stage-1];say('<b>第 '+stage+' 關｜'+d[0]+'</b><br>「前方就是敵軍！為了夥伴，衝過去！」',()=>{spawn(d[1],d[2],d[3]);lock=false})}
-function spawn(em,n,m){for(let i=0;i<n;i++){let e=document.createElement('div');e.className='enemy '+(n===1?'boss':'');e.textContent=em;G(e);let o={el:e,hp:m,max:m,dead:false,speed:.18+Math.random()*.18};e.style.left=(55+Math.random()*38)+'%';e.style.top=(25+Math.random()*48)+'%';let b=document.createElement('div');b.className='eb';b.innerHTML='<i></i>';e.appendChild(b);enemies.push(o)}}
+function applyCharacter(){
+  const art=$('hero').querySelector('.heroArt');
+  art.className='heroArt '+(selected==='三刀劍士'?'swords':selected==='黑腳戰士'?'black':'red');
+  art.querySelector('.hat').style.display=selected==='赤帽少年'?'block':'none';
+  art.querySelector('.sword').style.display=selected==='三刀劍士'?'block':'none';
+  art.querySelector('.hair').style.background=selected==='黑腳戰士'?'#120b0a':selected==='三刀劍士'?'#101010':'#201a18';
+}
+function start(){ $('menu').style.display='none';applyCharacter();running=true;hp=100;en=100;xp=0;lv=1;stage=1;transitioning=false;load()}
+function load(){
+  let sf=document.createElement('div');sf.className='stageFlash';$('app').appendChild(sf);setTimeout(()=>sf.remove(),600);
+  lock=true;transitioning=false;$('bossname').style.display='none';$('bossbar').style.display='none';$('combo').style.opacity=0;enemies.forEach(e=>e.el.remove());enemies=[];$('st').textContent=stage;let d=data[stage-1];say('<b>第 '+stage+' 關｜'+d[0]+'</b><br>📍 '+d[4]+'<br>「前方就是敵軍！為了夥伴，衝過去！」',()=>{spawn(d[1],d[2],d[3]);lock=false})}
+function spawn(em,n,m){
+  for(let i=0;i<n;i++){
+    let e=document.createElement('div');
+    e.className='enemy '+(n===1?'boss bossin':'');
+    e.textContent=em;
+    G(e);let o={el:e,hp:m,max:m,dead:false,speed:.18+Math.random()*.18};e.style.left=(n===1?'68%':(55+Math.random()*30))+'%';e.style.top=(n===1?(28+Math.random()*28):(24+Math.random()*34))+'%';if(n===1){
+      $('bossname').textContent='👑 BOSS：'+data[stage-1][0];
+      $('bossname').style.display='block';
+      $('bossbar').style.display='block';
+      $('bosslabel').textContent='👑 '+data[stage-1][0];
+      $('bosshp').style.width='100%';
+      
+    }let b=document.createElement('div');b.className='eb';b.innerHTML='<i></i>';e.appendChild(b);enemies.push(o)}}
 function G(e){document.getElementById('app').appendChild(e)}
-function bars(){$('hp').style.width=hp+'%';$('en').style.width=en+'%';$('xp').style.width=(xp%100)+'%';$('hpT').textContent=Math.round(hp)+'/100';$('enT').textContent=Math.round(en)+'/100';$('lv').textContent=lv}
+function bars(){$('hp').style.width=hp+'%';$('en').style.width=en+'%';$('xp').style.width=(xp%100)+'%';$('hpT').textContent=Math.round(hp)+'/100';$('enT').textContent=Math.round(en)+'/100';$('lv').textContent=lv;let b=enemies.find(x=>!x.dead&&x.max>=180);if(b&&b.max>=180){$('bosshp').style.width=Math.max(0,b.hp/b.max*100)+'%';$('bosslabel').textContent='👑 '+data[stage-1][0]+'  '+Math.max(0,Math.ceil(b.hp))+'/'+b.max}}
 function pop(t,x,y){let p=document.createElement('div');p.textContent=t;p.style.cssText=`position:absolute;z-index:17;left:${x}px;top:${y}px;font-size:30px;font-weight:1000;color:#ffe14c;text-shadow:2px 2px #000;transition:.45s`;document.getElementById('app').appendChild(p);requestAnimationFrame(()=>{p.style.transform='translateY(-35px) scale(1.4)';p.style.opacity=0});setTimeout(()=>p.remove(),500)}
-function gain(n){xp+=n;if(xp>=100){xp-=100;lv++;hp=100;en=100;$('levelup').style.display='block';lock=true}bars()}
+function gain(n){xp+=n;if(xp>=100){xp-=100;lv++;hp=100;en=100;$('levelup').innerHTML='⭐ 升級成功！<br>Lv.'+lv+'<br>❤️ HP 回滿　⚡ 能量回滿<br><button onclick="closeLevel()">繼續戰鬥</button>';$('levelup').style.display='block';lock=true}bars()}
 function closeLevel(){$('levelup').style.display='none';lock=false}
-function act(a){if(!running||lock)return;if(a==='attack'&&cd<=0){cd=.3;let hit=0;enemies.forEach(e=>{if(e.dead)return;let d=Math.hypot(e.el.offsetLeft-hero.offsetLeft,e.el.offsetTop-hero.offsetTop);if(d<145){let dmg=selected==='三刀劍士'?42:32;e.hp-=dmg;hit++;pop('👊 '+dmg,e.el.offsetLeft,e.el.offsetTop-25);e.el.querySelector('i').style.width=Math.max(0,e.hp/e.max*100)+'%'}});if(hit)gain(hit*10)}
-if(a==='skill'&&en>=35){en-=35;enemies.forEach(e=>{if(e.dead)return;let d=Math.hypot(e.el.offsetLeft-hero.offsetLeft,e.el.offsetTop-hero.offsetTop);if(d<260){e.hp-=selected==='黑腳戰士'?105:90;pop('🔥 必殺!',e.el.offsetLeft,e.el.offsetTop-25);e.el.querySelector('i').style.width=Math.max(0,e.hp/e.max*100)+'%'}})}
-if(a==='dodge'){inv=.9;toast('💨 無敵閃避')}
-if(a==='heal'){hp=Math.min(100,hp+30);toast('❤️ +30 HP')}
-if(a==='energy'){en=Math.min(100,en+35);toast('⚡ +35 能量')}bars();check()}
+function fx(kind,e,text){
+  let p=document.createElement('div');
+  p.className=kind==='slash'?'slash':'';
+  p.textContent=text;
+  p.style.left=(e.el.offsetLeft+e.el.offsetWidth/2-24)+'px';
+  p.style.top=(e.el.offsetTop-12)+'px';
+  $('app').appendChild(p);
+  if(kind==='slash')setTimeout(()=>p.remove(),340);
+}
+function hitFx(e){
+  e.el.classList.remove('hitflash'); void e.el.offsetWidth; e.el.classList.add('hitflash');
+}
+let combo=0,comboTimer=0;
+function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+function normalDamageRange(){
+  // 明確固定成：Lv1=5~8、Lv2=6~9；之後每升1級上下限各+1。
+  const min=4+lv, max=7+lv;
+  return [min,max];
+}
+function combatDamage(){
+  const [min,max]=normalDamageRange();
+  let d=rand(min,max);
+  if(selected==='三刀劍士') d+=1;
+  if(selected==='黑腳戰士' && Math.random()<.2) d+=2;
+  return d;
+}
+function skillDamageRange(){
+  // 技能：Lv1=13~19、Lv2=15~22，之後隨等級提升。
+  const min=11+lv*2, max=16+lv*3;
+  return [min,max];
+}
+function skillDamage(){
+  const [min,max]=skillDamageRange();
+  let d=rand(min,max);
+  if(selected==='三刀劍士') d+=2;
+  if(selected==='黑腳戰士') d+=4;
+  return d;
+}
+function addLog(text,cls='logNormal'){
+  const box=$('combatLog');
+  box.innerHTML='<b>⚔️ 戰鬥紀錄</b><br><span class="'+cls+'">'+text+'</span>';
+}
+function damagePop(t,x,y,crit=false){
+  let p=document.createElement('div');p.className='damage'+(crit?' crit':'');p.textContent=t;
+  p.style.left=Math.max(8,Math.min(window.innerWidth-90,x))+'px';
+  p.style.top=Math.max(130,y)+'px';$('app').appendChild(p);setTimeout(()=>p.remove(),920)
+}
+function damageTag(t,x,y){
+  let p=document.createElement('div');p.className='damageTag';p.textContent=t;
+  p.style.left=Math.max(8,Math.min(window.innerWidth-120,x))+'px';p.style.top=Math.max(120,y)+'px';
+  $('app').appendChild(p);setTimeout(()=>p.remove(),820)
+}
+(t,x,y,crit=false){
+  let p=document.createElement('div');p.className='damage'+(crit?' crit':'');p.textContent=t;
+  p.style.left=x+'px';p.style.top=y+'px';$('app').appendChild(p);setTimeout(()=>p.remove(),720)
+}
+function attackFX(e,dmg,crit=false,label='普通攻擊'){
+  const x=e.el.offsetLeft+e.el.offsetWidth/2,y=e.el.offsetTop-12;
+  fx('slash',e,'⚔️');e.el.classList.remove('hitflashV7');void e.el.offsetWidth;e.el.classList.add('hitflashV7');
+  damagePop('-'+dmg,x,y,crit);damageTag(label+'  -'+dmg,x-28,y-25);
+  let r=document.createElement('div');r.className='ring';r.style.left=x+'px';r.style.top=(e.el.offsetTop+e.el.offsetHeight/2)+'px';$('app').appendChild(r);setTimeout(()=>r.remove(),560);
+}
+function skillFX(){
+  const x=hero.offsetLeft+hero.offsetWidth/2,y=hero.offsetTop+hero.offsetHeight/2;
+  hero.classList.remove('heroSkill');void hero.offsetWidth;hero.classList.add('heroSkill');
+  let p=document.createElement('div');p.className='skillBurst';p.textContent=selected==='三刀劍士'?'⚔️':'🔥';p.style.left=x+'px';p.style.top=y+'px';$('app').appendChild(p);setTimeout(()=>p.remove(),560)
+}
+function act(a){
+ if(!running||lock)return;
+ if(a==='attack'&&cd<=0){
+   cd=.32;combo++;comboTimer=2.2;$('combo').textContent='連擊 '+combo+' HIT';$('combo').style.opacity=1;
+   let hit=0;
+   enemies.forEach(e=>{if(e.dead)return;let d=Math.hypot(e.el.offsetLeft-hero.offsetLeft,e.el.offsetTop-hero.offsetTop);
+     if(d<145){let dmg=combatDamage();let crit=Math.random()<.08;if(crit)dmg*=2;e.hp-=dmg;hit++;attackFX(e,dmg,crit,'普通攻擊'+(crit?'・暴擊':''));addLog('Lv.'+lv+' 普通攻擊：<b>'+dmg+'</b> 點傷害'+(crit?'　<span class="logCrit">暴擊！</span>':'')+'<br>本級範圍：'+normalDamageRange()[0]+'～'+normalDamageRange()[1]);e.el.querySelector('i').style.width=Math.max(0,e.hp/e.max*100)+'%'}
+   });
+   if(hit)gain(hit*8);
+ }
+ if(a==='skill'&&en<35){toast('⚡ 能量不足！');return}
+ if(a==='skill'&&en>=35){
+   en-=35;skillFX();toast('🔥 技能爆發！');
+   enemies.forEach(e=>{if(e.dead)return;let d=Math.hypot(e.el.offsetLeft-hero.offsetLeft,e.el.offsetTop-hero.offsetTop);
+     if(d<260){let dmg=skillDamage();let crit=Math.random()<.12;if(crit)dmg*=2;e.hp-=dmg;attackFX(e,dmg,crit,'🔥 技能'+(crit?'・暴擊':''));addLog('Lv.'+lv+' 🔥 技能：<b>'+dmg+'</b> 點傷害'+(crit?'　<span class="logCrit">暴擊！</span>':'')+'<br>技能範圍：'+skillDamageRange()[0]+'～'+skillDamageRange()[1]);e.el.querySelector('i').style.width=Math.max(0,e.hp/e.max*100)+'%'}
+   });
+ }
+ if(a==='dodge'){inv=.9;toast('💨 無敵閃避')}
+ if(a==='heal'){hp=Math.min(100,hp+30);toast('❤️ +30 HP')}
+ if(a==='energy'){en=Math.min(100,en+35);toast('⚡ +35 能量')}
+ bars();check()
+}
 function check(){
   // 先清除死亡敵人，再判斷是否過關；並且鎖定過關流程，避免同一關被重複觸發。
   let alive=0;
@@ -64,7 +321,14 @@ function check(){
 }
 function move(dx,dy){let l=Math.max(2,Math.min(94,hero.offsetLeft/window.innerWidth*100+dx)),t=Math.max(14,Math.min(72,hero.offsetTop/window.innerHeight*100+dy));hero.style.left=l+'%';hero.style.top=t+'%'}
 function toast(t){let x=$('toast');x.textContent=t;x.style.display='block';setTimeout(()=>x.style.display='none',800)}
-let last=performance.now();function loop(now){let dt=(now-last)/1000;last=now;if(running){cd=Math.max(0,cd-dt);inv=Math.max(0,inv-dt);let dx=0,dy=0;if(keys.w||keys.ArrowUp)dy-=.8;if(keys.s||keys.ArrowDown)dy+=.8;if(keys.a||keys.ArrowLeft)dx-=.8;if(keys.d||keys.ArrowRight)dx+=.8;if(dx||dy)move(dx,dy);enemies.forEach(e=>{if(e.dead)return;let ex=e.el.offsetLeft,ey=e.el.offsetTop,dx=hero.offsetLeft-ex,dy=hero.offsetTop-ey,d=Math.hypot(dx,dy);if(d>55){e.el.style.left=ex+dx/d*e.speed+'px';e.el.style.top=ey+dy/d*e.speed+'px'}else if(inv<=0){hp-=18*dt;if(hp<0){hp=100;toast('💥 倒地後復原')}}});bars();check()}requestAnimationFrame(loop)}requestAnimationFrame(loop);
+let last=performance.now();function loop(now){let dt=(now-last)/1000;last=now;if(running){cd=Math.max(0,cd-dt);inv=Math.max(0,inv-dt);comboTimer=Math.max(0,comboTimer-dt);if(comboTimer<=0){combo=0;$('combo').style.opacity=0;}let dx=0,dy=0;if(keys.w||keys.ArrowUp)dy-=.8;if(keys.s||keys.ArrowDown)dy+=.8;if(keys.a||keys.ArrowLeft)dx-=.8;if(keys.d||keys.ArrowRight)dx+=.8;if(dx||dy)move(dx,dy);enemies.forEach(e=>{if(e.dead)return;let ex=e.el.offsetLeft,ey=e.el.offsetTop,dx=hero.offsetLeft-ex,dy=hero.offsetTop-ey,d=Math.hypot(dx,dy);if(d>55){
+let nx=ex+dx/d*e.speed,ny=ey+dy/d*e.speed;
+let maxX=document.getElementById('app').clientWidth-(e.el.offsetWidth||60)-18;
+let maxY=document.getElementById('app').clientHeight-190-(e.el.offsetHeight||70);
+nx=Math.max(18,Math.min(maxX,nx));
+ny=Math.max(170,Math.min(Math.max(180,maxY),ny));
+e.el.style.left=nx+'px';e.el.style.top=ny+'px'
+}else if(inv<=0){hp-=18*dt;if(hp<0){hp=100;toast('💥 倒地後復原')}}});bars();check()}requestAnimationFrame(loop)}requestAnimationFrame(loop);
 addEventListener('keydown',e=>{keys[e.key]=true;if(e.key===' '||e.key==='j')act('attack');if(e.key==='k')act('skill');if(e.key==='l')act('dodge')});addEventListener('keyup',e=>keys[e.key]=false);
 document.querySelectorAll('[data-k]').forEach(b=>{let k={u:'ArrowUp',d:'ArrowDown',l:'ArrowLeft',r:'ArrowRight'}[b.dataset.k];b.onpointerdown=()=>keys[k]=true;b.onpointerup=()=>keys[k]=false;b.onpointerleave=()=>keys[k]=false});
 bars();
